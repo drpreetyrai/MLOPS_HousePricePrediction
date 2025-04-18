@@ -21,13 +21,23 @@ if not os.path.exists(MODEL_PATH):
 model = joblib.load(MODEL_PATH) 
 scaler = joblib.load(SCALER_PATH) 
 
+# class HouseFeatures(BaseModel):
+#     Bedrooms: float 
+#     Space: float 
+#     Room: float 
+#     Lot: float 
+#     Tax: float 
+#     Bathroom: float 
+#     Garage: float 
+#     Condition: float 
+
 class HouseFeatures(BaseModel):
-    Bedroom: float 
-    space: float 
+    Bedrooms: float 
+    Space: float 
     Room: float 
     Lot: float 
     Tax: float 
-    Bathrooms: float 
+    Bathroom: float 
     Garage: float 
     Condition: float 
 
@@ -36,16 +46,16 @@ class HouseFeatures(BaseModel):
 def home():
     return {"message": "Welcome to the House Price Prediction API"}  
 
-@app.get("/predict/") 
+@app.post("/predict/") 
 def predict_price(features: HouseFeatures): 
     input_data = data = pd.DataFrame([features.dict()])  # convert pydantic model to pandas DataFrame
     scaled_data = scaler.transform(input_data)  # scale the input data 
 
     prediction = model.predict(scaled_data)  # make prediction
-    return {"predicted_price": round(prediction)} 
+    return {"predicted_price": prediction} 
  
  
-# uvicorn fastapi_app:app
+# uvicorn app:app
 
 # uvicorn fastapi_app:app --host 0.0.0.0 --port 8000 --reload
 
