@@ -46,14 +46,23 @@ class HouseFeatures(BaseModel):
 def home():
     return {"message": "Welcome to the House Price Prediction API"}  
 
+# @app.post("/predict/") 
+# def predict_price(features: HouseFeatures): 
+#     input_data = data = pd.DataFrame([features.dict()])  # convert pydantic model to pandas DataFrame
+#     scaled_data = scaler.transform(input_data)  # scale the input data 
+
+#     prediction = model.predict(scaled_data)  # make prediction
+#     return {"predicted_price": prediction} 
+ 
 @app.post("/predict/") 
 def predict_price(features: HouseFeatures): 
-    input_data = data = pd.DataFrame([features.dict()])  # convert pydantic model to pandas DataFrame
-    scaled_data = scaler.transform(input_data)  # scale the input data 
-
-    prediction = model.predict(scaled_data)  # make prediction
-    return {"predicted_price": prediction} 
- 
+    try:
+        input_data = pd.DataFrame([features.dict()])  # convert pydantic model to pandas DataFrame
+        scaled_data = scaler.transform(input_data)  # scale the input data 
+        prediction = model.predict(scaled_data)  # make prediction
+        return {"predicted_price": float(prediction[0])}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
  
 # uvicorn app:app
 
