@@ -1,4 +1,7 @@
 joblib
 pandas 
 scikit-learn 
-
+scipy 
+fastapi 
+uvicorn 
+numpy
