@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>House Price Predictor</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>🏠 House Price Prediction</h1>
+        <form id="predictionForm">
+            <div class="input-group">
+                <label>Bedrooms</label>
+                <input type="number" step="any" name="Bedrooms" required>
+            </div>
+            <div class="input-group">
+                <label>Space (sq ft)</label>
+                <input type="number" step="any" name="Space" required>
+            </div>
+            <div class="input-group">
+                <label>Room</label>
+                <input type="number" step="any" name="Room" required>
+            </div>
+            <div class="input-group">
+                <label>Lot Size</label>
+                <input type="number" step="any" name="Lot" required>
+            </div>
+            <div class="input-group">
+                <label>Tax ($)</label>
+                <input type="number" step="any" name="Tax" required>
+            </div>
+            <div class="input-group">
+                <label>Bathroom</label>
+                <input type="number" step="any" name="Bathroom" required>
+            </div>
+            <div class="input-group">
+                <label>Garage</label>
+                <input type="number" step="any" name="Garage" required>
+            </div>
+            <div class="input-group">
+                <label>Condition (1-10)</label>
+                <input type="number" step="any" name="Condition" required>
+            </div>
+
+            <button type="submit">Predict Price</button>
+        </form>
+
+        <div id="result"></div>
+    </div>
+
+    <script>
+        const form = document.getElementById('predictionForm');
+        const resultDiv = document.getElementById('result');
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const formData = new FormData(form);
+            const data = {};
+            formData.forEach((value, key) => data[key] = parseFloat(value));
+
+            try {
+                const response = await fetch('http://127.0.0.1:8000/predict/', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(data)
+                });
+
+                const result = await response.json();
+                
+                if (response.ok) {
+                    resultDiv.innerHTML = `<h2>Predicted Price: $${result.predicted_price.toFixed(2)}</h2>`;
+                } else {
+                    resultDiv.innerHTML = `<p style="color: red;">Error: ${result.detail}</p>`;
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `<p style="color: red;">Network Error: ${error.message}</p>`;
+            }
+        });
+    </script>
+</body>
+</html>
+
+
+

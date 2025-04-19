@@ -2,9 +2,20 @@ import os
 import joblib 
 import pandas as pd 
 from fastapi import FastAPI, HTTPException 
+from fastapi.middleware.cors import CORSMiddleware
+
 from pydantic import BaseModel 
 
 app = FastAPI() 
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # allow all origins, for dev only
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__)) 
 MODEL_PATH = os.path.join(BASE_DIR, "../models/house_price_model.pkl")
@@ -20,16 +31,6 @@ if not os.path.exists(MODEL_PATH):
 # start unloading the trained model and scaler 
 model = joblib.load(MODEL_PATH) 
 scaler = joblib.load(SCALER_PATH) 
-
-# class HouseFeatures(BaseModel):
-#     Bedrooms: float 
-#     Space: float 
-#     Room: float 
-#     Lot: float 
-#     Tax: float 
-#     Bathroom: float 
-#     Garage: float 
-#     Condition: float 
 
 class HouseFeatures(BaseModel):
     Bedrooms: float 
@@ -57,7 +58,5 @@ def predict_price(features: HouseFeatures):
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
  
-# uvicorn app:app
 
-# uvicorn fastapi_app:app --host 0.0.0.0 --port 8000 --reload
 

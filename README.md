@@ -1,4 +1,6 @@
 
+![alt text](house_price_prediction.png)
+
 
 create a virtual environment :- 
 python -m venv venv
